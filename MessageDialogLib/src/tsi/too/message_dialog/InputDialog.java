@@ -150,8 +150,9 @@ public abstract class InputDialog {
 	 * Shows a dialog requesting input from the user.Loops until the validation rule is satisfied or the user cancels the
 	 * reading.
 	 *
-	 * @param title   the <code>Object</code> to display in the dialog title bar.
+	 * @param title the <code>Object</code> to display in the dialog title bar.
 	 * @param message the <code>Object</code> to display.
+	 * @param validator the <code>Object</code> with validation rule.
 	 * @return user's input.
 	 */
 	public static String showStringInputDialog(String title, String message, InputValidator<String> validator) {
@@ -172,7 +173,7 @@ public abstract class InputDialog {
 	}
 
 	/**
-	 * Shows a dialog box asking for user input with the specified <code>mask</code></>. Loops until the validation rule
+	 * Shows a dialog box asking for user input with the specified <code>mask</code>. Loops until the validation rule
 	 * is satisfied or the user cancels the reading.
 	 *
 	 * @param title     the <code>Object</code> to display in the dialog title bar.
@@ -300,6 +301,7 @@ public abstract class InputDialog {
 	 */
 	public interface InputValidator<E> {
 		String DEFAULT_SUCCESS_MESSAGE = "";
+		String FIELD_CANNOT_BE_EMPTY = "Este campo não pode ficar vazio.";
 
 		/**
 		 * gets the validation result.
@@ -313,12 +315,46 @@ public abstract class InputDialog {
 			return getErrorMessage(input).equals(DEFAULT_SUCCESS_MESSAGE);
 		}
 	}
+
+	/**
+	 * Creates an default validator for empty strings.
+	 * 
+	 * @param message the message to return if validation fails.
+	 * @return the created validator.
+	 */
+	public static final InputValidator<String> createEmptyStringValidator(String message) {
+		return new InputValidator<String>() {
+			@Override
+			public String getErrorMessage(String input) {
+				return input.isEmpty() || input.isBlank() ? FIELD_CANNOT_BE_EMPTY : DEFAULT_SUCCESS_MESSAGE;
+			}
+		};
+	}
+	
+	/**
+	 * Creates a double range validator
+	 * 
+	 * @param beginInclusive the first element of the range.
+	 * @param endInclusive the last element of the range.
+	 * @param validationMessage the message to return if validation fails.
+	 * @return
+	 */
+	public static final InputValidator<Double> createRangeValidator(double beginInclusive, double endInclusive, String validationMessage) {
+		return new InputValidator<Double>() {
+
+			@Override
+			public String getErrorMessage(Double input) {
+				return input <= endInclusive && input>= beginInclusive ? DEFAULT_SUCCESS_MESSAGE : validationMessage;
+			}
+
+		};
+	}
 	
 	/**
 	 * A processor that has the instruction that is based on an object.
 	 * @author lucas
 	 *
-	 * @param <E>
+	 * @param <E> the base object for execution
 	 */
 	public interface Executor<E>{
 		void execute(E object);

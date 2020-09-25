@@ -115,7 +115,7 @@ public class InputDialogMasked extends JDialog {
 	}
 
 	/**
-	 * Shows a dialog box asking for user input with the specified <code>mask</code></>.
+	 * Shows a dialog box asking for user input with the specified <code>mask</code>.
 	 *
 	 * @param title   the <code>Object</code> to display in the dialog title bar.
 	 * @param message the <code>Object</code> to display.
