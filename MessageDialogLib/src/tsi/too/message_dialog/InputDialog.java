@@ -341,12 +341,30 @@ public abstract class InputDialog {
 	 */
 	public static final InputValidator<Double> createRangeValidator(double beginInclusive, double endInclusive, String validationMessage) {
 		return new InputValidator<Double>() {
-
+			
 			@Override
 			public String getErrorMessage(Double input) {
 				return input <= endInclusive && input>= beginInclusive ? DEFAULT_SUCCESS_MESSAGE : validationMessage;
 			}
+			
+		};
+	}
+		
+	/**
+	 * Creates a length validator.
+	 * 
+	 * @param minLength the minimum length of the input.
+	 * @param maxLength the maximum length of the input.
+	 * @param validationMessage the message to return if validation fails.
+	 * @return
+	 */
+	public static final InputValidator<String> createLengthValidator(int minLength, double maxLength, String validationMessage) {
+		return new InputValidator<String>() {
 
+			@Override
+			public String getErrorMessage(String input) {
+				return input.length() >= minLength && input.length() <= maxLength ? DEFAULT_SUCCESS_MESSAGE : validationMessage;
+			}
 		};
 	}
 	

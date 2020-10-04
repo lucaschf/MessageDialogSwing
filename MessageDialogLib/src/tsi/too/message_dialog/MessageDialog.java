@@ -1,10 +1,21 @@
 package tsi.too.message_dialog;
 
-import static javax.swing.JOptionPane.*;
+import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
+import static javax.swing.JOptionPane.PLAIN_MESSAGE;
+import static javax.swing.JOptionPane.WARNING_MESSAGE;
+import static javax.swing.JOptionPane.YES_NO_OPTION;
+import static javax.swing.JOptionPane.YES_OPTION;
+import static javax.swing.JOptionPane.showConfirmDialog;
+import static javax.swing.JOptionPane.showMessageDialog;
+
+import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 
 public abstract class MessageDialog {
     /**
@@ -73,4 +84,26 @@ public abstract class MessageDialog {
 
         showPlainMessageDialog(title, new JScrollPane(textArea));
     }
+    
+    /**
+     * Displays a table in a message box based on  TableModel
+     * 
+     * @param title the dialog title
+     * @param tableModel the table model
+     * @param colunsWidth the columns width
+     * @param tableDimension the preferred table dimension
+     */
+    public static void showDataTable(String title, TableModel tableModel, int[] colunsWidth, Dimension tableDimension) {
+		JTable table = new JTable(tableModel);
+		
+		TableColumnModel taColumnModel = table.getColumnModel();
+		
+		if(colunsWidth != null) {
+			for(int i = 0; i < colunsWidth.length; i++)
+				taColumnModel.getColumn(i).setPreferredWidth(colunsWidth[i]);
+		}
+		
+		table.setPreferredScrollableViewportSize(tableDimension);
+		showPlainMessageDialog(title, new JScrollPane(table));
+	}
 }
