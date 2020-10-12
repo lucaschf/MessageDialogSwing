@@ -17,6 +17,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+@Deprecated
 public class InputDialogMasked extends JDialog {
 	private static final long serialVersionUID = 1L;
 
@@ -94,6 +95,7 @@ public class InputDialogMasked extends JDialog {
 	}
 
 	private void onCancel() {
+		userInput = null;
 		dispose();
 	}
 

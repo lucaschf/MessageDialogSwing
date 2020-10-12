@@ -1,17 +1,27 @@
 package tsi.too.message_dialog;
 
-import tsi.too.message_dialog.ext.StringExt;
+import static javax.swing.JOptionPane.PLAIN_MESSAGE;
+import static javax.swing.JOptionPane.showInputDialog;
 
+import java.awt.Dimension;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
+import javax.swing.text.MaskFormatter;
 
-import static javax.swing.JOptionPane.*;
-import static javax.swing.JOptionPane.showInputDialog;
+import tsi.too.message_dialog.ext.StringExt;
 
+/**
+ * A simple class for user's input handling.
+ * 
+ * @author Lucas Cristovam
+ *
+ */
 public abstract class InputDialog {
 
 	/**
@@ -115,7 +125,8 @@ public abstract class InputDialog {
 	 * @param validator the <code>Object</code> with the validation rule.
 	 * @return user's input parsed or null if aborted.
 	 */
-	public static BigDecimal showBigDecimalInputDialog(String title, String message, InputValidator<BigDecimal> validator) {
+	public static BigDecimal showBigDecimalInputDialog(
+			String title, String message, InputValidator<BigDecimal> validator) {
 		BigDecimal input;
 		String s;
 		var isValid = false;
@@ -186,8 +197,19 @@ public abstract class InputDialog {
 		String input;
 		var isValid = false;
 
+		JFormattedTextField inputTextField;
+		
+		try {
+			MaskFormatter maskFormatter = new MaskFormatter(mask);
+			maskFormatter.setPlaceholderCharacter('_');
+			inputTextField = new JFormattedTextField(maskFormatter);
+		} catch (Exception ex) {
+			inputTextField = new JFormattedTextField();
+		}
+		
 		do {
-			input = InputDialogMasked.showInputDialog(title, message, mask);
+			input = CustomInputDialog.showSingleLineInputDialog(title, message, inputTextField);
+			
 			if (input == null)
 				return null;
 
@@ -219,8 +241,19 @@ public abstract class InputDialog {
 		LocalDate result;
 		var isValid = false;
 
+		JFormattedTextField inputTextField;
+		
+		try {
+			MaskFormatter maskFormatter = new MaskFormatter(mask);
+			maskFormatter.setPlaceholderCharacter('_');
+			inputTextField = new JFormattedTextField(maskFormatter);
+		} catch (Exception ex) {
+			inputTextField = new JFormattedTextField();
+		}
+		
 		do {
-			input = InputDialogMasked.showInputDialog(title, message, mask);
+			input = CustomInputDialog.showSingleLineInputDialog(title, message, inputTextField);
+			
 			if (input == null)
 				return null;
 
@@ -239,6 +272,45 @@ public abstract class InputDialog {
 		return result;
 	}
 
+	/**
+	 * Shows a multiLine input dialog
+	 * 
+	 * @param title     the <code>Object</code> to display in the dialog title bar.
+	 * @param message   the <code>Object</code> to display.
+	 * @param dimension the preferred dialog dimension. 
+	 * @return user's input.
+	 */
+	public static String showMultiLineInputDialog(String title, String message, MultiLineDimension dimension) {
+		int rows;
+		int columns;
+		Dimension dialogDimension;
+		
+		switch (dimension) {
+			case SMALL:
+				rows = 15;
+				columns = 10;
+				dialogDimension = CustomInputDialog.SMALL_MULTILINE_DIALOG;
+				break;
+			case MEDIUM:
+				rows = 22;
+				columns = 20;
+				dialogDimension = CustomInputDialog.MEDIUM_MULTILINE_DIALOG;
+				break;
+			default:
+				rows = 30;
+				columns = 20;
+				dialogDimension = CustomInputDialog.LARGE_MULTILINE_DIALOG;			
+				break;
+		}
+		
+		return CustomInputDialog.showMultiLineInputDialog(
+				title,
+				message, 
+				new JTextArea(rows, columns),
+				dialogDimension
+		);
+	}
+	
 	/**
 	 * Brings up a choice dialog, where the initial choice is the first one.
 	 *
@@ -266,7 +338,8 @@ public abstract class InputDialog {
 	}
 
 	/**
-	 * Brings up a choice dialog, where the initial choice is the first one and excecutes an action based on the selected option.
+	 * Brings up a choice dialog, where the initial choice is the first one and excecutes 
+	 * an action based on the selected option.
 	 *
 	 * @param title   the title string for the dialog.
 	 * @param message the message to display.
@@ -301,7 +374,7 @@ public abstract class InputDialog {
 	 */
 	public interface InputValidator<E> {
 		String DEFAULT_SUCCESS_MESSAGE = "";
-		String FIELD_CANNOT_BE_EMPTY = "Este campo não pode ficar vazio.";
+		String FIELD_CANNOT_BE_EMPTY = "Este campo nï¿½o pode ficar vazio.";
 
 		/**
 		 * gets the validation result.
@@ -339,14 +412,18 @@ public abstract class InputDialog {
 	 * @param validationMessage the message to return if validation fails.
 	 * @return
 	 */
-	public static final InputValidator<Double> createRangeValidator(double beginInclusive, double endInclusive, String validationMessage) {
+	public static final InputValidator<Double> createRangeValidator(
+			double beginInclusive, 
+			double endInclusive, 
+			String validationMessage
+	) {
 		return new InputValidator<Double>() {
 			
 			@Override
 			public String getErrorMessage(Double input) {
-				return input <= endInclusive && input>= beginInclusive ? DEFAULT_SUCCESS_MESSAGE : validationMessage;
-			}
-			
+				return input <= endInclusive 
+						&& input>= beginInclusive ? DEFAULT_SUCCESS_MESSAGE : validationMessage;
+			}			
 		};
 	}
 		
@@ -358,12 +435,17 @@ public abstract class InputDialog {
 	 * @param validationMessage the message to return if validation fails.
 	 * @return
 	 */
-	public static final InputValidator<String> createLengthValidator(int minLength, double maxLength, String validationMessage) {
+	public static final InputValidator<String> createLengthValidator(
+			int minLength,
+			double maxLength, 
+			String validationMessage
+	) {
 		return new InputValidator<String>() {
 
 			@Override
 			public String getErrorMessage(String input) {
-				return input.length() >= minLength && input.length() <= maxLength ? DEFAULT_SUCCESS_MESSAGE : validationMessage;
+				return input.length() >= minLength 
+						&& input.length() <= maxLength ? DEFAULT_SUCCESS_MESSAGE : validationMessage;
 			}
 		};
 	}
@@ -376,5 +458,16 @@ public abstract class InputDialog {
 	 */
 	public interface Executor<E>{
 		void execute(E object);
+	}
+	
+	/**
+	 * Represents the multiLine dialog dimensions.
+	 * 
+	 * @author lucas
+	 */
+	public enum MultiLineDimension{
+		LARGE,
+		MEDIUM,
+		SMALL
 	}
 }
