@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"m":"message_dialog_lib","l":"tsi.too.message_dialog"}]
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"m":"message_dialog_lib","l":"tsi.too.message_dialog"},{"m":"message_dialog_lib","l":"tsi.too.message_dialog.ext"},{"m":"message_dialog_lib","l":"tsi.too.message_dialog.util"}]

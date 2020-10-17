@@ -1,2 +1,4 @@
 module:message_dialog_lib
 tsi.too.message_dialog
+tsi.too.message_dialog.ext
+tsi.too.message_dialog.util

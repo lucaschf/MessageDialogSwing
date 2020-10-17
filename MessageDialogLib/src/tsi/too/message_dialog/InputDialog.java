@@ -126,7 +126,7 @@ public abstract class InputDialog {
 	 * @return user's input parsed or null if aborted.
 	 */
 	public static BigDecimal showBigDecimalInputDialog(
-			String title, String message, InputValidator<BigDecimal> validator) {
+		String title, String message, InputValidator<BigDecimal> validator) {
 		BigDecimal input;
 		String s;
 		var isValid = false;
@@ -338,6 +338,30 @@ public abstract class InputDialog {
 	}
 
 	/**
+	 * Brings up a choice dialog, where the initial choice is the first one and an option is mandatory.
+	 *
+	 * @param title   the title string for the dialog.
+	 * @param message the message to display.
+	 * @param options the available choices.
+	 * @param <E>     the type of the options.
+	 * @param validator  the <code>Object</code> with validation rule.
+	 * 
+	 * @return user's choice or null if canceled.
+	 */
+	public static <E> E showOptionDialog(String title, String message, E[] options, InputValidator<E> validator) {
+		E input;
+		boolean isValid = false;
+		
+		do {
+			input = showOptionDialog(title, message, options);
+			
+			if(input == null)
+				return null;
+			
+		}while(!isValid);
+	}
+	
+	/**
 	 * Brings up a choice dialog, where the initial choice is the first one and excecutes 
 	 * an action based on the selected option.
 	 *
@@ -463,7 +487,7 @@ public abstract class InputDialog {
 	/**
 	 * Represents the multiLine dialog dimensions.
 	 * 
-	 * @author lucas
+	 * @author Lucas Cristovam
 	 */
 	public enum MultiLineDimension{
 		LARGE,
